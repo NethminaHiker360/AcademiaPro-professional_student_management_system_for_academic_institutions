@@ -22,9 +22,20 @@ public class DatabaseAccsessCode {
         PreparedStatement pstm = connection.prepareStatement("INSERT INTO student VALUES (?,?,?,?)");
         pstm.setString(1,student.getStudentId());
         pstm.setString(2,student.getFullName());
-        pstm.setDate(3, (Date) student.getDateOfBirth());
+        pstm.setObject(3,student.getDateOfBirth());
         pstm.setString(4,student.getAddress());
         return pstm.executeUpdate()>0;
+    }
+    public String lastStudentId(Student student) throws SQLException, ClassNotFoundException {
+        Connection connection = DbConnection.getInstance().getConnection();
+        PreparedStatement pstm = connection.prepareStatement
+                ("SELECT student_id from student ORDER BY student_id DESC LIMIT 1");
+        ResultSet rst = pstm.executeQuery();
+        if (rst.next()){
+            return rst.getString(1);
+        }else {
+            return null;
+        }
     }
 
     public User loginUser(String email) throws SQLException, ClassNotFoundException {
