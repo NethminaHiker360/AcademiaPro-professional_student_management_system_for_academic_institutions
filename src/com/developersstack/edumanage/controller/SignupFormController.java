@@ -29,7 +29,7 @@ public class SignupFormController {
         String lastName = txtLastName.getText();
         String password = new PasswordManager().encrypt(txtPassword.getText().trim());
         
-        User user=new User(email,firstName,lastName,password);
+        User user=new User(firstName,lastName,email,password);
 
         try {
             if(new DatabaseAccsessCode().saveUSer(user)){

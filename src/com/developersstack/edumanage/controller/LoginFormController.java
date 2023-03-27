@@ -1,6 +1,7 @@
 package com.developersstack.edumanage.controller;
 
 import com.developersstack.edumanage.db.Database;
+import com.developersstack.edumanage.db.DatabaseAccsessCode;
 import com.developersstack.edumanage.model.User;
 import com.developersstack.edumanage.util.security.PasswordManager;
 import javafx.event.ActionEvent;
@@ -14,6 +15,7 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.Optional;
 
 public class LoginFormController {
@@ -29,33 +31,22 @@ public class LoginFormController {
         String email = txtEmail.getText().toLowerCase();
         String password = txtPassword.getText().trim();
 
-       /* for (User user : Database.userTable){
-            if (user.getEmail().equals(email)){
-               if (user.getPassword().equals(password)){
-                   System.out.println(user.toString());
-                   return;
-               }else{
-                   new Alert(Alert.AlertType.ERROR,
-                          "Wrong Password!").show();
-                   return;
-               }
+        try {
+            User selectedUser = new DatabaseAccsessCode().loginUser(email);
+            if (null!=selectedUser){
+                if (new PasswordManager().checkPassword(password,selectedUser.getPassword())){
+                    setUi("DashboardForm");
+                }else{
+                    new Alert(Alert.AlertType.ERROR, "Wrong Password!").show();
+                }
+            }else{
+                new Alert(Alert.AlertType.WARNING, String.format("user not found (%s)",email)).show();
             }
+
+        } catch (SQLException | ClassNotFoundException e) {
+            new Alert(Alert.AlertType.WARNING,e.toString()).show();
         }
-        new Alert(Alert.AlertType.WARNING,
-                String.format("user not found (%s)",email)).show();*/
-       Optional<User> selectedUser =
-               Database.userTable.stream().filter(e->e.getEmail().equals(email)).findFirst();
-       if (selectedUser.isPresent()){
-           if (new PasswordManager().checkPassword(password,selectedUser.get().getPassword())){
-               setUi("DashboardForm");
-           }else{
-               new Alert(Alert.AlertType.ERROR,
-                       "Wrong Password!").show();
-           }
-       }else{
-           new Alert(Alert.AlertType.WARNING,
-                   String.format("user not found (%s)",email)).show();
-       }
+
     }
 
     public void createAnAccountOnAction(ActionEvent actionEvent) throws IOException {
