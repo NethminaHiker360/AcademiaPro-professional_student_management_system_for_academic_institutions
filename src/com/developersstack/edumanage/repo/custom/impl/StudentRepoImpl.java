@@ -59,8 +59,19 @@ public class StudentRepoImpl implements StudentRepo {
     }
 
     @Override
-    public ArrayList<Student> findAllStudents(String searchText) {
-        return null;
+    public ArrayList<Student> findAllStudents(String searchText) throws SQLException, ClassNotFoundException {
+        ArrayList<Student> studentList= new ArrayList<>();
+        searchText="%"+searchText+"%";
+        Connection connection = DbConnection.getInstance().getConnection();
+        PreparedStatement pstm = connection.prepareStatement("SELECT student FROM student WHERE student_id=? LIKE ? OR full_name LIKE ?");
+        pstm.setString(1,searchText);
+        pstm.setString(2,searchText);
+        ResultSet rst = pstm.executeQuery();
+        if (rst.next()){
+            studentList.add(new Student(rst.getString(1),rst.getString(2),
+                    rst.getDate(3),rst.getString(4)));
+        }
+        return studentList;
     }
 
     @Override

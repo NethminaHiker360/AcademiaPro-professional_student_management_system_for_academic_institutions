@@ -10,7 +10,7 @@ public interface StudentRepo {
     public String findStudentLastId() throws SQLException, ClassNotFoundException;
     public Student findStudent(String studentId) throws SQLException, ClassNotFoundException;
     public boolean updateStudent(Student student) throws SQLException, ClassNotFoundException;
-    public ArrayList<Student> findAllStudents(String searchText);
+    public ArrayList<Student> findAllStudents(String searchText) throws SQLException, ClassNotFoundException;
 
     public boolean deleteStudent(String studentId) throws SQLException, ClassNotFoundException;
 }
