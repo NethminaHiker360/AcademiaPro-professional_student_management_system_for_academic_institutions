@@ -5,7 +5,7 @@ import com.developersstack.edumanage.repo.custom.StudentRepo;
 
 import java.util.ArrayList;
 
-public class studentRepoImpl implements StudentRepo {
+public class StudentRepoImpl implements StudentRepo {
     @Override
     public boolean saveStudent(Student student) {
         return false;
