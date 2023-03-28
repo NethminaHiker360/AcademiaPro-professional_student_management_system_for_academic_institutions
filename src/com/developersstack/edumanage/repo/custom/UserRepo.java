@@ -1,5 +1,8 @@
 package com.developersstack.edumanage.repo.custom;
 
-public interface UserRepo {
+import com.developersstack.edumanage.entity.User;
 
+public interface UserRepo {
+    public boolean saveUser(User user);
+    public User loginUser(String email);
 }
