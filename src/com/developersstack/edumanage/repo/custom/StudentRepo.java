@@ -7,8 +7,8 @@ import java.util.ArrayList;
 
 public interface StudentRepo {
     public boolean saveStudent(Student student) throws SQLException, ClassNotFoundException;
-    public String findStudentLastId();
-    public Student findStudent(String studentId);
+    public String findStudentLastId() throws SQLException, ClassNotFoundException;
+    public Student findStudent(String studentId) throws SQLException, ClassNotFoundException;
     public boolean updateStudent(Student student);
     public ArrayList<Student> findAllStudents(String searchText);
 
