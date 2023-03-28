@@ -48,8 +48,14 @@ public class StudentRepoImpl implements StudentRepo {
     }
 
     @Override
-    public boolean updateStudent(Student student) {
-        return false;
+    public boolean updateStudent(Student student) throws SQLException, ClassNotFoundException {
+        Connection connection = DbConnection.getInstance().getConnection();
+        PreparedStatement pstm = connection.prepareStatement("UPDATE student SET full_name=?, dob=?,address=? WHERE student_id=?");
+        pstm.setString(1,student.getFullName());
+        pstm.setObject(2,student.getDateOfBirth());
+        pstm.setString(3,student.getAddress());
+        pstm.setString(4,student.getStudentId());
+        return pstm.executeUpdate()>0;
     }
 
     @Override
@@ -58,7 +64,10 @@ public class StudentRepoImpl implements StudentRepo {
     }
 
     @Override
-    public boolean deleteStudent(String studentId) {
-        return false;
+    public boolean deleteStudent(String studentId) throws SQLException, ClassNotFoundException {
+        Connection connection = DbConnection.getInstance().getConnection();
+        PreparedStatement pstm = connection.prepareStatement("DELETE FROM student WHERE student_id=?");
+        pstm.setString(1,studentId);
+        return pstm.executeUpdate()>0;
     }
 }
