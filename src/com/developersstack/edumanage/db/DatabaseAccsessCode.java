@@ -26,7 +26,7 @@ public class DatabaseAccsessCode {
         pstm.setString(4,student.getAddress());
         return pstm.executeUpdate()>0;
     }
-    public String lastStudentId(Student student) throws SQLException, ClassNotFoundException {
+    public String findStudentlastId(Student student) throws SQLException, ClassNotFoundException {
         Connection connection = DbConnection.getInstance().getConnection();
         PreparedStatement pstm = connection.prepareStatement
                 ("SELECT student_id from student ORDER BY student_id DESC LIMIT 1");
