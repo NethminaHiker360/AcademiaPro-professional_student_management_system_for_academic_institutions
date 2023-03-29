@@ -26,7 +26,6 @@ public class SignupFormController {
     public TextField txtEmail;
     public TextField txtLastName;
 
-    //Cohesion
 
     UserRepo userRepo=new UserRepoImpl();
     TeacherRepo teacherRepo=new TeacherRepoImpl();
