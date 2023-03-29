@@ -36,7 +36,7 @@ public class TeacherRepoImpl implements TeacherRepo {
     @Override
     public boolean updateTeacher(Teacher teacher) throws SQLException, ClassNotFoundException {
         Connection connection = DbConnection.getInstance().getConnection();
-        PreparedStatement pstm = connection.prepareStatement("INSERT INTO teacher VALUES (?,?,?,?)");
+        PreparedStatement pstm = connection.prepareStatement("UPDATE teacher SET name=?,address=?,contact=? WHERE teacher_code=?");
     }
 
     @Override
