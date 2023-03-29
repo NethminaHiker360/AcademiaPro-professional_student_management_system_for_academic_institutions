@@ -2,6 +2,8 @@ package com.developersstack.edumanage.controller;
 
 import com.developersstack.edumanage.db.Database;
 import com.developersstack.edumanage.entity.Student;
+import com.developersstack.edumanage.repo.custom.StudentRepo;
+import com.developersstack.edumanage.repo.custom.impl.StudentRepoImpl;
 import com.developersstack.edumanage.view.tm.StudentTm;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -14,6 +16,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -37,8 +40,9 @@ public class StudentFormController {
     public TextField txtSearch;
 
     String searchText="";
+    StudentRepo studentRepo=new StudentRepoImpl();
 
-    public void initialize(){
+    public void initialize() throws SQLException, ClassNotFoundException {
 
         colId.setCellValueFactory(new PropertyValueFactory<>("id"));
         colAddress.setCellValueFactory(new PropertyValueFactory<>("address"));
@@ -51,7 +55,11 @@ public class StudentFormController {
 
         txtSearch.textProperty().addListener((observable, oldValue, newValue) -> {
             searchText=newValue;
-            setTableData(searchText);
+            try {
+                setTableData(searchText);
+            } catch (SQLException |ClassNotFoundException e) {
+                e.printStackTrace();
+            }
         });
 
         tblStudents.getSelectionModel()
@@ -71,10 +79,9 @@ public class StudentFormController {
         btn.setText("Update Student");
     }
 
-    private void setTableData(String searchText) {
+    private void setTableData(String searchText) throws SQLException, ClassNotFoundException {
         ObservableList<StudentTm> obList = FXCollections.observableArrayList();
-        for (Student st:Database.studentTable
-             ) {
+        for (Student st:studentRepo.findAllStudents(searchText)) {
             if (st.getFullName().contains(searchText)){
                 Button btn= new Button("Delete");
                 StudentTm tm = new StudentTm(
@@ -93,27 +100,34 @@ public class StudentFormController {
                     );
                     Optional<ButtonType> buttonType = alert.showAndWait();
                     if (buttonType.get().equals(ButtonType.YES)){
-                        Database.studentTable.remove(st);
+                        try {
+                            studentRepo.deleteStudent(st.getStudentId());
+                        } catch (SQLException |ClassNotFoundException ex) {
+                            ex.printStackTrace();
+                        }
                         new Alert(Alert.AlertType.INFORMATION, "Deleted!").show();
-                        setTableData(searchText);
-                        setStudentId();
+                        try {
+                            setTableData(searchText);
+                        } catch (SQLException |ClassNotFoundException ex) {
+                            throw new RuntimeException(ex);
+                        }
+                        try {
+                            setStudentId();
+                        } catch (SQLException | ClassNotFoundException ex) {
+                            ex.printStackTrace();
+                        }
                     }
                 });
 
                 obList.add(tm);
-
             }
-
         }
         tblStudents.setItems(obList);
     }
 
-    private void setStudentId() {
-        if (!Database.studentTable.isEmpty()){
-            Student lastStudent = Database.studentTable.get(
-                    Database.studentTable.size()-1
-            );
-            String lastId= lastStudent.getStudentId();
+    private void setStudentId() throws SQLException, ClassNotFoundException {
+        if (studentRepo.findStudentLastId()!=null){
+            String lastId= studentRepo.findStudentLastId();
             String splitData[] = lastId.split("-");
             String lastIdIntegerNumberAsAString = splitData[1];
             int lastIntegerIdAsInt=Integer.parseInt(lastIdIntegerNumberAsAString);
@@ -125,22 +139,22 @@ public class StudentFormController {
         }
     }
 
-    public void saveOnAction(ActionEvent actionEvent) {
+    public void saveOnAction(ActionEvent actionEvent) throws SQLException, ClassNotFoundException {
+        Student student = new Student(
+                txtId.getText(),
+                txtName.getText(),
+                Date.from(txtDob.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant()),
+                txtAddress.getText());
         if (btn.getText().equalsIgnoreCase("Save Student")){
-            Student student = new Student(
-                    txtId.getText(),
-                    txtName.getText(),
-                    Date.from(txtDob.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant()),
-                    txtAddress.getText()
-            );
-            Database.studentTable.add(student);
-            setStudentId();
-            clear();
-            setTableData(searchText);
-            new Alert(Alert.AlertType.INFORMATION, "Student saved!").show();
+            boolean isSaved = studentRepo.saveStudent(student);
+            if (isSaved){
+                setStudentId();
+                clear();
+                setTableData(searchText);
+                new Alert(Alert.AlertType.INFORMATION, "Student saved!").show();
+            }
         }else{
-            for (Student st:Database.studentTable
-                 ) {
+            for (Student st:Database.studentTable) {
                 if (st.getStudentId().equals(txtId.getText())){
                     st.setAddress(txtAddress.getText());
                     st.setFullName(txtName.getText());
@@ -158,12 +172,11 @@ public class StudentFormController {
 
     private void clear(){
         txtDob.setValue(null);
-        //txtName.setText("");
         txtName.clear();
         txtAddress.clear();
     }
 
-    public void newStudentOnAction(ActionEvent actionEvent) {
+    public void newStudentOnAction(ActionEvent actionEvent) throws SQLException, ClassNotFoundException {
         clear();
         setStudentId();
         btn.setText("Save Student");

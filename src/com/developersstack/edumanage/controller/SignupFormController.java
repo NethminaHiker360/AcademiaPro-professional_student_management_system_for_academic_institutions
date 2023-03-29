@@ -2,6 +2,10 @@ package com.developersstack.edumanage.controller;
 
 import com.developersstack.edumanage.db.DatabaseAccsessCode;
 import com.developersstack.edumanage.entity.User;
+import com.developersstack.edumanage.repo.custom.TeacherRepo;
+import com.developersstack.edumanage.repo.custom.UserRepo;
+import com.developersstack.edumanage.repo.custom.impl.TeacherRepoImpl;
+import com.developersstack.edumanage.repo.custom.impl.UserRepoImpl;
 import com.developersstack.edumanage.util.security.PasswordManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
@@ -22,6 +26,9 @@ public class SignupFormController {
     public TextField txtEmail;
     public TextField txtLastName;
 
+    UserRepo userRepo=new UserRepoImpl();
+    TeacherRepo teacherRepo=new TeacherRepoImpl();
+
     public void signUpOnAction(ActionEvent actionEvent) throws IOException {
         String email = txtEmail.getText().toLowerCase();
         String firstName = txtFirstName.getText();
@@ -31,7 +38,7 @@ public class SignupFormController {
         User user=new User(firstName,lastName,email,password);
 
         try {
-            if(new DatabaseAccsessCode().saveUSer(user)){
+            if(userRepo.saveUser(user)){
                 new Alert(Alert.AlertType.INFORMATION, "Welcome!").show();
                 setUi("LoginForm");
             }else {
