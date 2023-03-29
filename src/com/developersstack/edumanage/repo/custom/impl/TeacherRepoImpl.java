@@ -69,5 +69,7 @@ public class TeacherRepoImpl implements TeacherRepo {
     public boolean deleteTeacher(String teacher_id) throws SQLException, ClassNotFoundException {
         Connection connection = DbConnection.getInstance().getConnection();
         PreparedStatement pstm = connection.prepareStatement("DELETE FROM teacher WHERE teacher_code=?");
+        pstm.setString(1,teacher_id);
+        return pstm.executeUpdate()>0;
     }
 }
