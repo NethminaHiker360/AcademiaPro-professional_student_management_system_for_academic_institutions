@@ -22,27 +22,32 @@ public class TeacherRepoImpl implements TeacherRepo {
     }
 
     @Override
-    public Teacher findTeacher(String teacher_id) {
-        return null;
+    public Teacher findTeacher(String teacher_id) throws SQLException, ClassNotFoundException {
+        Connection connection = DbConnection.getInstance().getConnection();
+        PreparedStatement pstm = connection.prepareStatement("SELECT teacher FROM teacher WHERE teacher_code=?");
     }
 
     @Override
-    public String findTeacherLastId() {
-        return null;
+    public String findTeacherLastId() throws SQLException, ClassNotFoundException {
+        Connection connection = DbConnection.getInstance().getConnection();
+        PreparedStatement pstm = connection.prepareStatement("SELECT teacher_code FROM teacher WHERE teacher_code LIKE ?");
     }
 
     @Override
-    public boolean updateTeacher(Teacher teacher) {
-        return false;
+    public boolean updateTeacher(Teacher teacher) throws SQLException, ClassNotFoundException {
+        Connection connection = DbConnection.getInstance().getConnection();
+        PreparedStatement pstm = connection.prepareStatement("INSERT INTO teacher VALUES (?,?,?,?)");
     }
 
     @Override
-    public ArrayList<Teacher> findaAllTeachers(String searchText) {
-        return null;
+    public ArrayList<Teacher> findaAllTeachers(String searchText) throws SQLException, ClassNotFoundException {
+        Connection connection = DbConnection.getInstance().getConnection();
+        PreparedStatement pstm = connection.prepareStatement("INSERT INTO teacher VALUES (?,?,?,?)");
     }
 
     @Override
-    public boolean deleteTeacher(String teacher_id) {
-        return false;
+    public boolean deleteTeacher(String teacher_id) throws SQLException, ClassNotFoundException {
+        Connection connection = DbConnection.getInstance().getConnection();
+        PreparedStatement pstm = connection.prepareStatement("INSERT INTO teacher VALUES (?,?,?,?)");
     }
 }
