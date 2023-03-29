@@ -6,6 +6,7 @@ import com.developersstack.edumanage.repo.custom.TeacherRepo;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -31,6 +32,11 @@ public class TeacherRepoImpl implements TeacherRepo {
     public String findTeacherLastId() throws SQLException, ClassNotFoundException {
         Connection connection = DbConnection.getInstance().getConnection();
         PreparedStatement pstm = connection.prepareStatement("SELECT teacher_code FROM teacher ORDER BY CAST(SUBSTRING(student_id,3) AS UNSIGNED) DESC LIMIT 1");
+        ResultSet rst = pstm.executeQuery();
+        if (rst.next()){
+            return rst.getString(1);
+        }
+        return null;
     }
 
     @Override
