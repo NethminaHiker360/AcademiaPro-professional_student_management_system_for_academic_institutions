@@ -18,6 +18,7 @@ public class TeacherRepoImpl implements TeacherRepo {
         pstm.setString(2,teacher.getName());
         pstm.setString(3,teacher.getAddress());
         pstm.setString(4,teacher.getCode());
+        return pstm.executeUpdate()>0;
     }
 
     @Override
