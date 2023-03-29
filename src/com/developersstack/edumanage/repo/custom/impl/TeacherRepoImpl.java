@@ -26,6 +26,14 @@ public class TeacherRepoImpl implements TeacherRepo {
     public Teacher findTeacher(String teacher_id) throws SQLException, ClassNotFoundException {
         Connection connection = DbConnection.getInstance().getConnection();
         PreparedStatement pstm = connection.prepareStatement("SELECT teacher FROM teacher WHERE teacher_code=?");
+        pstm.setString(1,teacher_id);
+        ResultSet rst = pstm.executeQuery();
+        if (rst.next()){
+            return new Teacher(rst.getString(1),rst.getString(2),
+                    rst.getString(3),rst.getString(4));
+        }else {
+            return null;
+        }
     }
 
     @Override
