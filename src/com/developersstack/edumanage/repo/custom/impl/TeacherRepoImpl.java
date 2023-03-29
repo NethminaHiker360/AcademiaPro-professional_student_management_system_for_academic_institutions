@@ -52,8 +52,17 @@ public class TeacherRepoImpl implements TeacherRepo {
 
     @Override
     public ArrayList<Teacher> findaAllTeachers(String searchText) throws SQLException, ClassNotFoundException {
+        searchText="%"+searchText+"%";
+        ArrayList<Teacher> teacherArrayList=new ArrayList<>();
         Connection connection = DbConnection.getInstance().getConnection();
         PreparedStatement pstm = connection.prepareStatement("SELECT teacher FROM teacher WHERE teacher_code=? OR name=?)");
+        pstm.setString(1,searchText);
+        ResultSet rst = pstm.executeQuery();
+        if (rst.next()){
+            teacherArrayList.add(new Teacher(rst.getString(1),rst.getString(2),
+                    rst.getString(3),rst.getString(4)));
+        }
+        return teacherArrayList;
     }
 
     @Override
