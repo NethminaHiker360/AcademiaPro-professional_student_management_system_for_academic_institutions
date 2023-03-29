@@ -30,7 +30,7 @@ public class TeacherRepoImpl implements TeacherRepo {
     @Override
     public String findTeacherLastId() throws SQLException, ClassNotFoundException {
         Connection connection = DbConnection.getInstance().getConnection();
-        PreparedStatement pstm = connection.prepareStatement("SELECT teacher_code FROM teacher WHERE teacher_code LIKE ?");
+        PreparedStatement pstm = connection.prepareStatement("SELECT teacher_code FROM teacher ORDER BY CAST(SUBSTRING(student_id,3) AS UNSIGNED) DESC LIMIT 1");
     }
 
     @Override
