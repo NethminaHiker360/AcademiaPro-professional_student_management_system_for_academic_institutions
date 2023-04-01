@@ -1,4 +1,4 @@
-package com.developersstack.edumanage.repo.custom;
+package com.developersstack.edumanage.repo;
 
 import com.developersstack.edumanage.db.DbConnection;
 
