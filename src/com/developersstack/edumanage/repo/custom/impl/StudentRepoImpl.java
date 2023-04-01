@@ -2,6 +2,7 @@ package com.developersstack.edumanage.repo.custom.impl;
 
 import com.developersstack.edumanage.db.DbConnection;
 import com.developersstack.edumanage.entity.Student;
+import com.developersstack.edumanage.repo.CrudUtil;
 import com.developersstack.edumanage.repo.custom.StudentRepo;
 
 import java.sql.Connection;
@@ -13,20 +14,13 @@ import java.util.ArrayList;
 public class StudentRepoImpl implements StudentRepo {
     @Override
     public boolean saveStudent(Student student) throws SQLException, ClassNotFoundException {
-        Connection connection = DbConnection.getInstance().getConnection();
-        PreparedStatement pstm = connection.prepareStatement("INSERT INTO student VALUES (?,?,?,?)");
-        pstm.setString(1,student.getStudentId());
-        pstm.setString(2,student.getFullName());
-        pstm.setObject(3,student.getDateOfBirth());
-        pstm.setString(4,student.getAddress());
-        return pstm.executeUpdate()>0;
+        return CrudUtil.execute("INSERT INTO student VALUES (?,?,?,?)",student.getStudentId()
+                ,student.getFullName(),student.getDateOfBirth(),student.getAddress());
     }
 
     @Override
     public String findStudentLastId() throws SQLException, ClassNotFoundException {
-        Connection connection = DbConnection.getInstance().getConnection();
-        PreparedStatement pstm = connection.prepareStatement("SELECT student_id FROM student ORDER BY CAST(SUBSTRING(student_id,3) AS UNSIGNED) DESC LIMIT 1");
-        ResultSet rst = pstm.executeQuery();
+        ResultSet rst = CrudUtil.execute("SELECT student_id FROM student ORDER BY CAST(SUBSTRING(student_id,3) AS UNSIGNED) DESC LIMIT 1");
         if (rst.next()){
             return rst.getString(1);
         }
@@ -35,10 +29,7 @@ public class StudentRepoImpl implements StudentRepo {
 
     @Override
     public Student findStudent(String studentId) throws SQLException, ClassNotFoundException {
-        Connection connection = DbConnection.getInstance().getConnection();
-        PreparedStatement pstm = connection.prepareStatement("SELECT student FROM student WHERE student_id=?");
-        pstm.setString(1,studentId);
-        ResultSet rst = pstm.executeQuery();
+        ResultSet rst = CrudUtil.execute("SELECT student FROM student WHERE student_id=?",studentId);
         if (rst.next()){
             return new Student(rst.getString(1),rst.getString(2),
                     rst.getDate(3),rst.getString(4));
@@ -49,24 +40,15 @@ public class StudentRepoImpl implements StudentRepo {
 
     @Override
     public boolean updateStudent(Student student) throws SQLException, ClassNotFoundException {
-        Connection connection = DbConnection.getInstance().getConnection();
-        PreparedStatement pstm = connection.prepareStatement("UPDATE student SET full_name=?, dob=?,address=? WHERE student_id=?");
-        pstm.setString(1,student.getFullName());
-        pstm.setObject(2,student.getDateOfBirth());
-        pstm.setString(3,student.getAddress());
-        pstm.setString(4,student.getStudentId());
-        return pstm.executeUpdate()>0;
+        return CrudUtil.execute("UPDATE student SET full_name=?, dob=?,address=? WHERE student_id=?",
+                student.getFullName(),student.getDateOfBirth(),student.getAddress(),student.getStudentId());
     }
 
     @Override
     public ArrayList<Student> findAllStudents(String searchText) throws SQLException, ClassNotFoundException {
         ArrayList<Student> studentList= new ArrayList<>();
         searchText="%"+searchText+"%";
-        Connection connection = DbConnection.getInstance().getConnection();
-        PreparedStatement pstm = connection.prepareStatement("SELECT student FROM student WHERE student_id=? LIKE ? OR full_name LIKE ?");
-        pstm.setString(1,searchText);
-        pstm.setString(2,searchText);
-        ResultSet rst = pstm.executeQuery();
+        ResultSet rst = CrudUtil.execute("SELECT student FROM student WHERE student_id=? LIKE ? OR full_name LIKE ?",searchText,searchText);
         if (rst.next()){
             studentList.add(new Student(rst.getString(1),rst.getString(2),
                     rst.getDate(3),rst.getString(4)));
