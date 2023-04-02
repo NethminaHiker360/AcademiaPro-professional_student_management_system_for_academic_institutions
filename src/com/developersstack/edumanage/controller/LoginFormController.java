@@ -33,7 +33,7 @@ public class LoginFormController {
         String password = txtPassword.getText().trim();
 
         try {
-            User selectedUser = userRepo.loginUser(email);
+            User selectedUser = userRepo.find(email);
             if (null!=selectedUser){
                 if (new PasswordManager().checkPassword(password,selectedUser.getPassword())){
                     setUi("DashboardForm");
