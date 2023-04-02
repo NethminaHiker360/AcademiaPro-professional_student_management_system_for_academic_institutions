@@ -1,5 +1,6 @@
 package com.developersstack.edumanage.repo.custom.impl;
 
+import com.developersstack.edumanage.dto.UserDto;
 import com.developersstack.edumanage.entity.User;
 import com.developersstack.edumanage.repo.CrudUtil;
 import com.developersstack.edumanage.repo.custom.UserRepo;
@@ -22,6 +23,16 @@ public class UserRepoImpl implements UserRepo {
     }
 
     @Override
+    public boolean save(UserDto dto) throws SQLException, ClassNotFoundException {
+        return false;
+    }
+
+    @Override
+    public boolean update(UserDto dto) throws SQLException, ClassNotFoundException {
+        return false;
+    }
+
+    @Override
     public boolean delete(String s) throws SQLException, ClassNotFoundException {
         return false;
     }
@@ -38,6 +49,16 @@ public class UserRepoImpl implements UserRepo {
 
     @Override
     public ArrayList<User> findAll() {
+        return null;
+    }
+
+    @Override
+    public boolean saveUser(UserDto dto) {
+        return false;
+    }
+
+    @Override
+    public UserDto findUser(String id) {
         return null;
     }
 }
