@@ -2,7 +2,7 @@ package com.developersstack.edumanage.repo;
 
 import java.util.ArrayList;
 
-public interface CrudRepo<T, ID> {
+public interface CrudRepo<T, ID> { //facade Pattern
     public boolean save(T t);
     public boolean update(T t);
     public boolean delete(T t);
