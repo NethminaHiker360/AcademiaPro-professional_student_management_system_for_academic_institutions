@@ -60,4 +60,29 @@ public class StudentRepoImpl implements StudentRepo {
     public boolean deleteStudent(String studentId) throws SQLException, ClassNotFoundException {
         return CrudUtil.execute("DELETE FROM student WHERE student_id=?",studentId);
     }
+
+    @Override
+    public boolean save(Student student) {
+        return false;
+    }
+
+    @Override
+    public boolean update(Student student) {
+        return false;
+    }
+
+    @Override
+    public boolean delete(Student student) {
+        return false;
+    }
+
+    @Override
+    public Student find(String s) {
+        return null;
+    }
+
+    @Override
+    public ArrayList<Student> findAll() {
+        return null;
+    }
 }
